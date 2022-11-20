@@ -32,12 +32,13 @@ class NoteDetailsFragment : MvpAppCompatFragment(), NoteDetailsView {
 
     private fun initView() {
         binding.fab.setOnClickListener {
-            findNavController().navigate(R.id.action_Details_to_List)
+            presenter.saveNote(binding.noteEditView.editableText.toString())
+
         }
     }
 
-    override fun saveNote() {
-        //to do
+    override fun backToList() {
+        findNavController().navigate(R.id.action_Details_to_List)
     }
 
 }
