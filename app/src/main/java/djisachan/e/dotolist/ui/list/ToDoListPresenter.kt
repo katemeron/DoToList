@@ -1,27 +1,42 @@
 package djisachan.e.dotolist.ui.list
 
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
 import djisachan.e.dotolist.R
+import djisachan.e.dotolist.domain.ToDoListViewRepository
 import djisachan.e.dotolist.models.domain.Note
 import djisachan.e.dotolist.models.ui.Item
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
+import javax.inject.Inject
 
 
 /**
  * @author Markova Ekaterina on 19-Nov-22
  */
 @InjectViewState
-class ToDoListPresenter : MvpPresenter<ToDoListView>() {
+class ToDoListPresenter @Inject constructor(private val toDoListViewRepository: ToDoListViewRepository) : MvpPresenter<ToDoListView>() {
+
+    private val compositeDisposable = CompositeDisposable()
 
     private var fullList: Boolean = false
-    private var noteList: List<Note> = listOf(
-        Note(id = "1", text = "Первая"),
-        Note(id = "2", text = "Вторая"),
-        Note(id = "3", text = "Третья", done = true)
-    )
+    private var noteList: List<Note> = emptyList()
 
     fun loadList() {
-        viewState.showList(createList())
+        compositeDisposable.add(
+            toDoListViewRepository
+                .loadNotes()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ result ->
+                    noteList = result
+                    viewState.showList(createList())
+                }, { throwable ->
+                    Log.e("ToDoListPresenter", throwable.toString())
+                })
+        )
     }
 
     private fun createList(): List<Item> {
