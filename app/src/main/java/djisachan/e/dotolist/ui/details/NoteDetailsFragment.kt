@@ -1,13 +1,14 @@
 package djisachan.e.dotolist.ui.details
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
+import com.arellomobile.mvp.presenter.ProvidePresenter
 import djisachan.e.dotolist.R
+import djisachan.e.dotolist.ToDoNotesApp
 import djisachan.e.dotolist.databinding.NoteDetailsLayoutBinding
 
 /**
@@ -20,6 +21,13 @@ class NoteDetailsFragment : MvpAppCompatFragment(), NoteDetailsView {
     @InjectPresenter
     lateinit var presenter: NoteDetailsPresenter
 
+    @ProvidePresenter
+    fun provideDetailsPresenter(): NoteDetailsPresenter {
+        val appComponent = (activity?.application as ToDoNotesApp).appComponent
+        appComponent.inject(this)
+        return NoteDetailsPresenter(appComponent.noteDetailsRepository)
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = NoteDetailsLayoutBinding.inflate(inflater, container, false)
         return binding.root
@@ -29,8 +37,29 @@ class NoteDetailsFragment : MvpAppCompatFragment(), NoteDetailsView {
         initView()
     }
 
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.edit_note_menu, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                activity?.onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
 
     private fun initView() {
+        with(requireActivity() as AppCompatActivity) {
+            setSupportActionBar(binding.toolbar)
+            supportActionBar?.title = getString(R.string.new_note)
+            setHasOptionsMenu(true)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        }
+
         binding.fab.setOnClickListener {
             presenter.saveNote(binding.noteEditView.editableText.toString())
 

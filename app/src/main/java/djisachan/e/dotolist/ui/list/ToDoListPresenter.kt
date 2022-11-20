@@ -39,6 +39,20 @@ class ToDoListPresenter @Inject constructor(private val toDoListViewRepository: 
         )
     }
 
+    private fun updateNote(note: Note) {
+        compositeDisposable.add(
+            toDoListViewRepository
+                .updateNote(note)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    loadList()
+                }, { throwable ->
+                    Log.e("ToDoListPresenter", throwable.toString())
+                })
+        )
+    }
+
     private fun createList(): List<Item> {
         val count = noteList.count { it.done }
         return if (count > 0) {
@@ -72,9 +86,10 @@ class ToDoListPresenter @Inject constructor(private val toDoListViewRepository: 
     }
 
     private fun Note.toUI() = Item.NoteItem(
-        text = this.text,
-        checked = this.done,
+        text = text,
+        checked = done,
         checkedListener = {
+            updateNote(Note(id, text, !done))
             viewState.showToast("УРА")
         },
         noteClickListener = {}

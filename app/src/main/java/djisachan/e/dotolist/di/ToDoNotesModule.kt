@@ -6,8 +6,10 @@ import androidx.room.Room
 import com.arellomobile.mvp.presenter.ProvidePresenter
 import dagger.Module
 import dagger.Provides
+import djisachan.e.dotolist.data.NoteDetailsRepositoryImpl
 import djisachan.e.dotolist.data.NotesDatabase
 import djisachan.e.dotolist.data.ToDoListViewRepositoryImpl
+import djisachan.e.dotolist.domain.NoteDetailsRepository
 import djisachan.e.dotolist.domain.ToDoListViewRepository
 import djisachan.e.dotolist.ui.list.ToDoListPresenter
 import javax.inject.Singleton
@@ -40,5 +42,11 @@ class ToDoNotesModule(private val application: Application) {
     @Singleton
     fun provideToDoListViewRepository(notesDatabase: NotesDatabase): ToDoListViewRepository {
         return ToDoListViewRepositoryImpl(notesDatabase)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNoteDetailsRepository(notesDatabase: NotesDatabase): NoteDetailsRepository {
+        return NoteDetailsRepositoryImpl(notesDatabase)
     }
 }

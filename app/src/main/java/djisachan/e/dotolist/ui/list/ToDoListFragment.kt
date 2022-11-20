@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -13,7 +14,6 @@ import djisachan.e.dotolist.MainActivity
 import djisachan.e.dotolist.R
 import djisachan.e.dotolist.ToDoNotesApp
 import djisachan.e.dotolist.databinding.ToDoFragmentLayoutBinding
-import djisachan.e.dotolist.di.ToDoNotesComponent
 import djisachan.e.dotolist.models.ui.Item
 
 
@@ -22,7 +22,6 @@ import djisachan.e.dotolist.models.ui.Item
  */
 class ToDoListFragment : MvpAppCompatFragment(), ToDoListView {
 
-    private lateinit var appComponent: ToDoNotesComponent
     private lateinit var binding: ToDoFragmentLayoutBinding
     private val adapter = ToDoListAdapter(ToDoListViewHolderFactory())
 
@@ -31,7 +30,7 @@ class ToDoListFragment : MvpAppCompatFragment(), ToDoListView {
 
     @ProvidePresenter
     fun provideDetailsPresenter(): ToDoListPresenter {
-        appComponent = (activity?.application as ToDoNotesApp).appComponent
+        val appComponent = (activity?.application as ToDoNotesApp).appComponent
         appComponent.inject(this)
         return ToDoListPresenter(appComponent.toDoListViewRepository)
     }
@@ -49,8 +48,10 @@ class ToDoListFragment : MvpAppCompatFragment(), ToDoListView {
 
 
     private fun initView() {
-        (activity as MainActivity).setSupportActionBar(binding.toolbar)
-        (activity as MainActivity).supportActionBar?.title = getString(R.string.notes_list)
+        with(requireActivity() as AppCompatActivity) {
+            setSupportActionBar(binding.toolbar)
+            supportActionBar?.title = getString(R.string.notes_list)
+        }
         binding.fab.setOnClickListener {
             findNavController().navigate(R.id.action_List_to_Details)
         }

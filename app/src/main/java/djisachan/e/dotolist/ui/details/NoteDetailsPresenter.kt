@@ -1,18 +1,24 @@
 package djisachan.e.dotolist.ui.details
 
 import android.os.SystemClock
+import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
-import djisachan.e.dotolist.domain.NoteDetailsInteractor
+import djisachan.e.dotolist.domain.NoteDetailsRepository
 import djisachan.e.dotolist.models.domain.Note
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.schedulers.Schedulers
 
 /**
  * @author Markova Ekaterina on 19-Nov-22
  */
 @InjectViewState
 class NoteDetailsPresenter(
-    private val noteDetailsInteractor: NoteDetailsInteractor
+    private val noteDetailsRepository: NoteDetailsRepository
 ) : MvpPresenter<NoteDetailsView>() {
+
+    private val compositeDisposable = CompositeDisposable()
 
     var currentNote = Note(
         "",
@@ -21,7 +27,23 @@ class NoteDetailsPresenter(
     )
 
     fun saveNote(text: String) {
-        noteDetailsInteractor.saveNote(
+        compositeDisposable.add(
+            noteDetailsRepository
+                .saveNote(
+                    Note(
+                        id = currentNote.id.ifEmpty { SystemClock.uptimeMillis().toString() },
+                        text = text
+                    )
+                )
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    viewState.backToList()
+                }, { throwable ->
+                    Log.e("ToDoListPresenter", throwable.toString())
+                })
+        )
+        noteDetailsRepository.saveNote(
             Note(
                 id = currentNote.id.ifEmpty { SystemClock.uptimeMillis().toString() },
                 text = text
