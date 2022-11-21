@@ -35,10 +35,14 @@ class NoteDetailsFragment : MvpAppCompatFragment(), NoteDetailsView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initView()
+        presenter.currentId = arguments?.getString(NOTE_ID_KEY) ?: ""
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.edit_note_menu, menu)
+        val noteText = arguments?.getString(NOTE_TEXT_KEY) ?: ""
+        if (noteText.isNotEmpty()) {
+            inflater.inflate(R.menu.edit_note_menu, menu)
+        }
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -48,6 +52,10 @@ class NoteDetailsFragment : MvpAppCompatFragment(), NoteDetailsView {
                 activity?.onBackPressed()
                 true
             }
+            R.id.action_delete -> {
+                presenter.deleteNote()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -55,7 +63,13 @@ class NoteDetailsFragment : MvpAppCompatFragment(), NoteDetailsView {
     private fun initView() {
         with(requireActivity() as AppCompatActivity) {
             setSupportActionBar(binding.toolbar)
-            supportActionBar?.title = getString(R.string.new_note)
+            val noteText = arguments?.getString(NOTE_TEXT_KEY) ?: ""
+            if (noteText.isNotEmpty()) {
+                binding.noteEditView.setText(noteText)
+                supportActionBar?.title = getString(R.string.note)
+            } else {
+                supportActionBar?.title = getString(R.string.new_note)
+            }
             setHasOptionsMenu(true)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
         }
@@ -66,8 +80,17 @@ class NoteDetailsFragment : MvpAppCompatFragment(), NoteDetailsView {
         }
     }
 
+    override fun showNote(text: String) {
+        binding.noteEditView.setText(text)
+    }
+
     override fun backToList() {
         findNavController().navigate(R.id.action_Details_to_List)
+    }
+
+    companion object {
+        private const val NOTE_ID_KEY = "noteId"
+        private const val NOTE_TEXT_KEY = "noteText"
     }
 
 }

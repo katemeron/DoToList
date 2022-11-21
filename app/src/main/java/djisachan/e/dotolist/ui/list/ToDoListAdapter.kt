@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import djisachan.e.dotolist.models.ui.Item
 import djisachan.e.dotolist.models.ui.Item.NoteItem
+import djisachan.e.dotolist.ui.list.viewholders.NoteItemViewHolder
+import djisachan.e.dotolist.ui.list.viewholders.OpenCloseItemViewHolder
 import djisachan.e.dotolist.ui.list.viewholders.ToDoItemViewHolder
 
 /**
@@ -18,7 +20,7 @@ class ToDoListAdapter(private val viewHolderFactory: ToDoListViewHolderFactory) 
         return viewHolderFactory.create(
             parent,
             LayoutInflater.from(parent.context),
-            list[viewType]
+            viewType
         )
     }
 
@@ -28,5 +30,8 @@ class ToDoListAdapter(private val viewHolderFactory: ToDoListViewHolderFactory) 
 
     override fun getItemCount() = list.size
 
-    override fun getItemViewType(position: Int) = position
+    override fun getItemViewType(position: Int) = when (list[position]) {
+        is NoteItem -> NoteItemViewHolder.TYPE
+        is Item.OpenCloseItem -> OpenCloseItemViewHolder.TYPE
+    }
 }

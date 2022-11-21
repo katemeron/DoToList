@@ -10,5 +10,7 @@ interface ToDoListView : MvpView {
 
     fun showList(list: List<Item>)
 
+    fun editNote(id: String, text: String)
+
     fun showToast(string: String)
 }

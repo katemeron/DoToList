@@ -1,11 +1,11 @@
 package djisachan.e.dotolist.data
 
-import djisachan.e.dotolist.data.DataNote
-import djisachan.e.dotolist.data.NotesDatabase
 import djisachan.e.dotolist.domain.NoteDetailsRepository
 import djisachan.e.dotolist.models.domain.Note
 import djisachan.e.dotolist.models.domain.toData
+import djisachan.e.dotolist.models.domain.toDomain
 import io.reactivex.Completable
+import io.reactivex.Single
 
 /**
  * @author Markova Ekaterina on 19-Nov-22
@@ -13,12 +13,16 @@ import io.reactivex.Completable
 class NoteDetailsRepositoryImpl(
     private val notesDatabase: NotesDatabase
 ) : NoteDetailsRepository {
-    override fun saveNote(currentNote: Note) : Completable {
-       return notesDatabase.getNotesDao().insert(currentNote.toData())
+    override fun loadNoteById(id: String): Single<Note> {
+        return notesDatabase.getNotesDao().getNoteById(id).map { it.toDomain() }
     }
 
-    override fun deleteNote(id: String) {
-        notesDatabase.getNotesDao().delete(id)
+    override fun saveNote(currentNote: Note): Completable {
+        return notesDatabase.getNotesDao().insert(currentNote.toData())
+    }
+
+    override fun deleteNote(id: String): Completable {
+        return notesDatabase.getNotesDao().delete(id)
     }
 
 }

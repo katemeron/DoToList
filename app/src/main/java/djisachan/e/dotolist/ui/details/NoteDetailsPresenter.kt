@@ -20,18 +20,16 @@ class NoteDetailsPresenter(
 
     private val compositeDisposable = CompositeDisposable()
 
-    var currentNote = Note(
-        "",
-        "",
-        false
-    )
+    var currentId = ""
 
     fun saveNote(text: String) {
         compositeDisposable.add(
             noteDetailsRepository
                 .saveNote(
                     Note(
-                        id = currentNote.id.ifEmpty { SystemClock.uptimeMillis().toString() },
+                        id = currentId.ifEmpty {
+                            SystemClock.uptimeMillis().toString()
+                        },
                         text = text
                     )
                 )
@@ -45,10 +43,24 @@ class NoteDetailsPresenter(
         )
         noteDetailsRepository.saveNote(
             Note(
-                id = currentNote.id.ifEmpty { SystemClock.uptimeMillis().toString() },
+                id = currentId.ifEmpty { SystemClock.uptimeMillis().toString() },
                 text = text
             )
 
+        )
+    }
+
+    fun deleteNote() {
+        compositeDisposable.add(
+            noteDetailsRepository
+                .deleteNote(currentId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    viewState.backToList()
+                }, { throwable ->
+                    Log.e("ToDoListPresenter", throwable.toString())
+                })
         )
     }
 }

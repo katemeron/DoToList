@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.arellomobile.mvp.MvpAppCompatFragment
 import com.arellomobile.mvp.presenter.InjectPresenter
@@ -15,6 +16,7 @@ import djisachan.e.dotolist.R
 import djisachan.e.dotolist.ToDoNotesApp
 import djisachan.e.dotolist.databinding.ToDoFragmentLayoutBinding
 import djisachan.e.dotolist.models.ui.Item
+import djisachan.e.dotolist.ui.details.NoteDetailsFragment
 
 
 /**
@@ -70,11 +72,24 @@ class ToDoListFragment : MvpAppCompatFragment(), ToDoListView {
         }
     }
 
+    override fun editNote(id: String, text: String) {
+        val bundle = bundleOf(
+            NOTE_ID_KEY to id,
+            NOTE_TEXT_KEY to text
+        )
+        findNavController().navigate(R.id.action_List_to_Details, bundle)
+    }
+
     override fun showToast(string: String) {
         Toast.makeText(
             activity as MainActivity,
             string,
             Toast.LENGTH_SHORT
         ).show()
+    }
+
+    companion object {
+        private const val NOTE_ID_KEY = "noteId"
+        private const val NOTE_TEXT_KEY = "noteText"
     }
 }

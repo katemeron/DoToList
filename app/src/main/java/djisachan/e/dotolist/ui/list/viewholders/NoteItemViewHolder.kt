@@ -20,9 +20,15 @@ class NoteItemViewHolder(itemView: View) : ToDoItemViewHolder(itemView) {
         checkBox.isChecked = item.checked
         if (item.checked) {
             titleTextView.paintFlags = titleTextView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+        } else {
+            titleTextView.paintFlags = 0
         }
         titleTextView.text = item.text
         checkBox.setOnClickListener(item.checkedListener)
         titleTextView.setOnClickListener(item.noteClickListener)
+    }
+
+    companion object {
+        const val TYPE = 0
     }
 }

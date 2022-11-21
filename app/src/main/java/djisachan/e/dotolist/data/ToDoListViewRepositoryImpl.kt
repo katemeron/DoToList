@@ -3,6 +3,7 @@ package djisachan.e.dotolist.data
 import djisachan.e.dotolist.domain.ToDoListViewRepository
 import djisachan.e.dotolist.models.domain.Note
 import djisachan.e.dotolist.models.domain.toData
+import djisachan.e.dotolist.models.domain.toDomain
 import io.reactivex.Completable
 import io.reactivex.Single
 
@@ -20,10 +21,4 @@ class ToDoListViewRepositoryImpl(
     override fun updateNote(note: Note): Completable {
         return notesDatabase.getNotesDao().insert(note.toData())
     }
-
-    private fun DataNote.toDomain() = Note(
-        id = this.noteUuid,
-        text = this.text,
-        done = this.status
-    )
 }

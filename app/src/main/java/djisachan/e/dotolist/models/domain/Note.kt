@@ -16,3 +16,9 @@ fun Note.toData() = DataNote(
     text = this.text,
     status = this.done
 )
+
+fun DataNote.toDomain() = Note(
+    id = this.noteUuid,
+    text = this.text,
+    done = this.status
+)

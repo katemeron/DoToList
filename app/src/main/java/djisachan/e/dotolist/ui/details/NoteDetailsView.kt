@@ -7,5 +7,7 @@ import com.arellomobile.mvp.MvpView
  */
 interface NoteDetailsView : MvpView {
 
+    fun showNote(text: String)
+
     fun backToList()
 }
