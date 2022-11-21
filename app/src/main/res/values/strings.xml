@@ -3,6 +3,7 @@
     <string name="no_list">Заметок пока нет\n Нажмите + чтобы добавить заметку</string>
     <string name="add_note">Добавить заметку</string>
     <string name="new_note">Новая заметка</string>
+    <string name="note">Заметка</string>
     <string name="note_text">Текст заметки</string>
     <string name="hide_done">Скрыть выполненные</string>
     <string name="show_done">Отобразить выполненные</string>

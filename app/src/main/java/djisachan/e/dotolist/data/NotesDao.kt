@@ -15,6 +15,9 @@ interface NotesDao {
     @Query("SELECT * FROM datanote")
     fun getAll(): Single<List<DataNote>>
 
+    @Query("SELECT * FROM datanote WHERE noteUuid = :id")
+    fun getNoteById(id: String): Single<DataNote>
+
     @Query("DELETE FROM datanote WHERE noteUuid = :id")
     fun delete(id: String): Completable
 }

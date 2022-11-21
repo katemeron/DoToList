@@ -90,8 +90,9 @@ class ToDoListPresenter @Inject constructor(private val toDoListViewRepository: 
         checked = done,
         checkedListener = {
             updateNote(Note(id, text, !done))
-            viewState.showToast("УРА")
         },
-        noteClickListener = {}
+        noteClickListener = {
+            viewState.editNote(id, text)
+        }
     )
 }

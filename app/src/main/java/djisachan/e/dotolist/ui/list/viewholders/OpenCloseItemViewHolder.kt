@@ -20,4 +20,7 @@ class OpenCloseItemViewHolder(itemView: View) : ToDoItemViewHolder(itemView) {
         icon.setImageDrawable(res)
         itemView.setOnClickListener(item.clickListener)
     }
+    companion object {
+        const val TYPE = 1
+    }
 }
