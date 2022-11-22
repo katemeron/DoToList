@@ -11,5 +11,6 @@ data class DataNote(
     @PrimaryKey
     var noteUuid: String,
     var text: String,
-    var status: Boolean
+    var status: Boolean,
+    var notification: Boolean
 )

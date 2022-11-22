@@ -16,7 +16,6 @@ import djisachan.e.dotolist.R
 import djisachan.e.dotolist.ToDoNotesApp
 import djisachan.e.dotolist.databinding.ToDoFragmentLayoutBinding
 import djisachan.e.dotolist.models.ui.Item
-import djisachan.e.dotolist.ui.details.NoteDetailsFragment
 
 
 /**
@@ -60,11 +59,21 @@ class ToDoListFragment : MvpAppCompatFragment(), ToDoListView {
         binding.recyclerView.adapter = adapter
     }
 
+    override fun showProgress() {
+        binding.progressBar.visibility = View.VISIBLE
+        binding.recyclerView.visibility = View.GONE
+        binding.centeredWarning.visibility = View.GONE
+    }
+
+    override fun hideProgress() {
+        binding.progressBar.visibility = View.GONE
+    }
+
     override fun showList(list: List<Item>) {
         if (list.isNotEmpty()) {
             binding.recyclerView.visibility = View.VISIBLE
             binding.centeredWarning.visibility = View.GONE
-            adapter.list = list
+            adapter.list = list.toMutableList()
             adapter.notifyDataSetChanged()
         } else {
             binding.recyclerView.visibility = View.GONE
@@ -72,12 +81,18 @@ class ToDoListFragment : MvpAppCompatFragment(), ToDoListView {
         }
     }
 
-    override fun editNote(id: String, text: String) {
+    override fun editNote(id: String, text: String, notification: Boolean) {
         val bundle = bundleOf(
             NOTE_ID_KEY to id,
-            NOTE_TEXT_KEY to text
+            NOTE_TEXT_KEY to text,
+            NOTIFICATION_KEY to notification
         )
         findNavController().navigate(R.id.action_List_to_Details, bundle)
+    }
+
+    override fun removeItem(index: Int) {
+        adapter.list.removeAt(index)
+        adapter.notifyItemRemoved(index)
     }
 
     override fun showToast(string: String) {
@@ -91,5 +106,6 @@ class ToDoListFragment : MvpAppCompatFragment(), ToDoListView {
     companion object {
         private const val NOTE_ID_KEY = "noteId"
         private const val NOTE_TEXT_KEY = "noteText"
+        private const val NOTIFICATION_KEY = "notificationKey"
     }
 }

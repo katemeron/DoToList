@@ -1,5 +1,6 @@
 package djisachan.e.dotolist.ui.list
 
+import android.os.Handler
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
@@ -25,6 +26,7 @@ class ToDoListPresenter @Inject constructor(private val toDoListViewRepository: 
     private var noteList: List<Note> = emptyList()
 
     fun loadList() {
+        viewState.showProgress()
         compositeDisposable.add(
             toDoListViewRepository
                 .loadNotes()
@@ -32,21 +34,26 @@ class ToDoListPresenter @Inject constructor(private val toDoListViewRepository: 
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ result ->
                     noteList = result
+                    viewState.hideProgress()
                     viewState.showList(createList())
+
                 }, { throwable ->
                     Log.e("ToDoListPresenter", throwable.toString())
                 })
         )
     }
 
-    private fun updateNote(note: Note) {
+    private fun updateNote(index: Int, note: Note) {
         compositeDisposable.add(
             toDoListViewRepository
                 .updateNote(note)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    loadList()
+                    viewState.removeItem(index)
+                    Handler().postDelayed({
+                        loadList()
+                    }, 400)
                 }, { throwable ->
                     Log.e("ToDoListPresenter", throwable.toString())
                 })
@@ -56,7 +63,7 @@ class ToDoListPresenter @Inject constructor(private val toDoListViewRepository: 
     private fun createList(): List<Item> {
         val count = noteList.count { it.done }
         return if (count > 0) {
-            val finalList: MutableList<Item> = noteList.filter { !it.done }.map { it.toUI() }.toMutableList()
+            val finalList: MutableList<Item> = noteList.filter { !it.done }.mapIndexed { index, note -> note.toUI(index) }.toMutableList()
             if (fullList) {
                 finalList.add(
                     Item.OpenCloseItem(
@@ -67,7 +74,7 @@ class ToDoListPresenter @Inject constructor(private val toDoListViewRepository: 
                         viewState.showList(createList())
                     }
                 )
-                finalList.addAll(noteList.filter { it.done }.map { it.toUI() })
+                finalList.addAll(noteList.filter { it.done }.mapIndexed { index, note -> note.toUI(index) })
             } else {
                 finalList.add(
                     Item.OpenCloseItem(
@@ -81,18 +88,18 @@ class ToDoListPresenter @Inject constructor(private val toDoListViewRepository: 
             }
             finalList
         } else {
-            noteList.map { it.toUI() }
+            noteList.mapIndexed { index, note -> note.toUI(index) }
         }
     }
 
-    private fun Note.toUI() = Item.NoteItem(
+    private fun Note.toUI(index: Int) = Item.NoteItem(
         text = text,
         checked = done,
         checkedListener = {
-            updateNote(Note(id, text, !done))
+            updateNote(index, Note(id, text, !done, notification))
         },
         noteClickListener = {
-            viewState.editNote(id, text)
+            viewState.editNote(id, text, notification)
         }
     )
 }
