@@ -10,4 +10,6 @@ interface NoteDetailsView : MvpView {
     fun showNote(text: String)
 
     fun backToList()
+
+    fun showToast(textRes: Int)
 }

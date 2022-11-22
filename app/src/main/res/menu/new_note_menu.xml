@@ -4,14 +4,6 @@
 
     <item
         android:id="@+id/action_notification_on"
-        android:icon="@drawable/ic_baseline_notifications_off_24"
-        android:orderInCategory="10"
-        app:iconTint="@android:color/white"
-        android:title="Напоминание"
-        app:showAsAction="ifRoom|collapseActionView" />
-
-    <item
-        android:id="@+id/action_notification_off"
         android:icon="@drawable/ic_baseline_notifications_24"
         android:orderInCategory="10"
         app:iconTint="@android:color/white"
@@ -19,10 +11,10 @@
         app:showAsAction="ifRoom|collapseActionView" />
 
     <item
-        android:id="@+id/action_delete"
-        android:icon="@drawable/ic_baseline_delete_24"
+        android:id="@+id/action_notification_off"
+        android:icon="@drawable/ic_baseline_notifications_off_24"
         android:orderInCategory="10"
         app:iconTint="@android:color/white"
-        android:title="Очистить"
+        android:title="Напоминание"
         app:showAsAction="ifRoom|collapseActionView" />
 </menu>

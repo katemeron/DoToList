@@ -9,8 +9,6 @@ import io.reactivex.Single
  */
 interface NoteDetailsRepository {
 
-    fun loadNoteById(id: String): Single<Note>
-
     fun saveNote(currentNote: Note): Completable
 
     fun deleteNote(id: String) : Completable

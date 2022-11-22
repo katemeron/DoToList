@@ -8,9 +8,15 @@ import djisachan.e.dotolist.models.ui.Item
  */
 interface ToDoListView : MvpView {
 
+    fun showProgress()
+
+    fun hideProgress()
+
     fun showList(list: List<Item>)
 
-    fun editNote(id: String, text: String)
+    fun editNote(id: String, text: String, notification: Boolean)
+
+    fun removeItem(index: Int)
 
     fun showToast(string: String)
 }

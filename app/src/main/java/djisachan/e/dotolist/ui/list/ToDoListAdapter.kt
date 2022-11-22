@@ -14,7 +14,7 @@ import djisachan.e.dotolist.ui.list.viewholders.ToDoItemViewHolder
  */
 class ToDoListAdapter(private val viewHolderFactory: ToDoListViewHolderFactory) : RecyclerView.Adapter<ToDoItemViewHolder>() {
 
-    var list: List<Item> = emptyList()
+    var list: MutableList<Item> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ToDoItemViewHolder {
         return viewHolderFactory.create(

@@ -4,6 +4,7 @@ import android.os.SystemClock
 import android.util.Log
 import com.arellomobile.mvp.InjectViewState
 import com.arellomobile.mvp.MvpPresenter
+import djisachan.e.dotolist.R
 import djisachan.e.dotolist.domain.NoteDetailsRepository
 import djisachan.e.dotolist.models.domain.Note
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -21,33 +22,40 @@ class NoteDetailsPresenter(
     private val compositeDisposable = CompositeDisposable()
 
     var currentId = ""
+    var currentNotification = false
 
     fun saveNote(text: String) {
-        compositeDisposable.add(
-            noteDetailsRepository
-                .saveNote(
-                    Note(
-                        id = currentId.ifEmpty {
-                            SystemClock.uptimeMillis().toString()
-                        },
-                        text = text
+        if (text.isNotEmpty()) {
+            compositeDisposable.add(
+                noteDetailsRepository
+                    .saveNote(
+                        Note(
+                            id = currentId.ifEmpty {
+                                SystemClock.uptimeMillis().toString()
+                            },
+                            text = text,
+                            notification = currentNotification
+                        )
                     )
-                )
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    viewState.backToList()
-                }, { throwable ->
-                    Log.e("ToDoListPresenter", throwable.toString())
-                })
-        )
-        noteDetailsRepository.saveNote(
-            Note(
-                id = currentId.ifEmpty { SystemClock.uptimeMillis().toString() },
-                text = text
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        viewState.backToList()
+                    }, { throwable ->
+                        Log.e("ToDoListPresenter", throwable.toString())
+                    })
             )
+            noteDetailsRepository.saveNote(
+                Note(
+                    id = currentId.ifEmpty { SystemClock.uptimeMillis().toString() },
+                    text = text,
+                    notification = currentNotification
+                )
 
-        )
+            )
+        } else {
+            viewState.showToast(R.string.empty_note)
+        }
     }
 
     fun deleteNote() {

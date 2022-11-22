@@ -8,17 +8,20 @@ import djisachan.e.dotolist.data.DataNote
 data class Note(
     val id: String,
     val text: String,
-    val done: Boolean = false
+    val done: Boolean = false,
+    val notification: Boolean = false
 )
 
 fun Note.toData() = DataNote(
     noteUuid = this.id,
     text = this.text,
-    status = this.done
+    status = this.done,
+    notification = this.notification
 )
 
 fun DataNote.toDomain() = Note(
     id = this.noteUuid,
     text = this.text,
-    done = this.status
+    done = this.status,
+    notification = this.notification
 )
