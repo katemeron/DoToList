@@ -8,4 +8,6 @@
     <string name="hide_done">Скрыть выполненные</string>
     <string name="show_done">Отобразить выполненные</string>
     <string name="empty_note">Невозможно сохранить пустую заметку!</string>
+    <string name="reminder">Напоминание</string>
+    <string name="close_note">Завершить</string>
 </resources>

@@ -12,4 +12,6 @@ interface NoteDetailsView : MvpView {
     fun backToList()
 
     fun showToast(textRes: Int)
+
+    fun setAlarm(text: String)
 }

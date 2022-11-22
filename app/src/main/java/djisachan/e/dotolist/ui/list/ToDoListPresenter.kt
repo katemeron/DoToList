@@ -23,7 +23,7 @@ class ToDoListPresenter @Inject constructor(private val toDoListViewRepository: 
     private val compositeDisposable = CompositeDisposable()
 
     private var fullList: Boolean = false
-    private var noteList: List<Note> = emptyList()
+    private var noteList: MutableList<Note> = mutableListOf()
 
     fun loadList() {
         viewState.showProgress()
@@ -33,10 +33,11 @@ class ToDoListPresenter @Inject constructor(private val toDoListViewRepository: 
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ result ->
-                    noteList = result
-                    viewState.hideProgress()
-                    viewState.showList(createList())
-
+                    noteList = result.sortedBy { it.id }.toMutableList()
+                    Handler().postDelayed({
+                        viewState.hideProgress()
+                        viewState.showList(createList())
+                    }, 800)
                 }, { throwable ->
                     Log.e("ToDoListPresenter", throwable.toString())
                 })
@@ -52,8 +53,10 @@ class ToDoListPresenter @Inject constructor(private val toDoListViewRepository: 
                 .subscribe({
                     viewState.removeItem(index)
                     Handler().postDelayed({
-                        loadList()
-                    }, 400)
+                        val currentIndex = noteList.indexOfFirst { it.id == note.id }
+                        noteList[currentIndex] = note
+                        viewState.showList(createList())
+                    }, 300)
                 }, { throwable ->
                     Log.e("ToDoListPresenter", throwable.toString())
                 })

@@ -25,7 +25,12 @@ class NoteDetailsPresenter(
     var currentNotification = false
 
     fun saveNote(text: String) {
-        if (text.isNotEmpty()) {
+        if (text.isEmpty()) {
+            viewState.showToast(R.string.empty_note)
+        } else {
+            if (currentNotification) {
+                viewState.setAlarm(text)
+            }
             compositeDisposable.add(
                 noteDetailsRepository
                     .saveNote(
@@ -53,8 +58,6 @@ class NoteDetailsPresenter(
                 )
 
             )
-        } else {
-            viewState.showToast(R.string.empty_note)
         }
     }
 
