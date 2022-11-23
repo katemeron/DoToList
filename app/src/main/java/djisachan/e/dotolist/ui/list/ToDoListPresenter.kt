@@ -29,29 +29,29 @@ class ToDoListPresenter @Inject constructor(private val toDoListViewRepository: 
         viewState.showProgress()
         compositeDisposable.add(
             toDoListViewRepository.loadNotes().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({ result ->
-                    noteList = result.sortedBy { it.id }.toMutableList()
-                    Handler().postDelayed({
-                        viewState.hideProgress()
-                        viewState.showList(createList())
-                    }, 800)
-                }, { throwable ->
-                    Log.e("ToDoListPresenter", throwable.toString())
-                })
+                noteList = result.sortedBy { it.id }.toMutableList()
+                Handler().postDelayed({
+                    viewState.hideProgress()
+                    viewState.showList(createList())
+                }, 800)
+            }, { throwable ->
+                Log.e("ToDoListPresenter", throwable.toString())
+            })
         )
     }
 
     private fun updateNote(index: Int, note: Note) {
         compositeDisposable.add(
             toDoListViewRepository.updateNote(note).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe({
-                    viewState.removeItem(index)
-                    Handler().postDelayed({
-                        val currentIndex = noteList.indexOfFirst { it.id == note.id }
-                        noteList[currentIndex] = note
-                        viewState.showList(createList())
-                    }, 300)
-                }, { throwable ->
-                    Log.e("ToDoListPresenter", throwable.toString())
-                })
+                viewState.removeItem(index)
+                Handler().postDelayed({
+                    val currentIndex = noteList.indexOfFirst { it.id == note.id }
+                    noteList[currentIndex] = note
+                    viewState.showList(createList())
+                }, 300)
+            }, { throwable ->
+                Log.e("ToDoListPresenter", throwable.toString())
+            })
         )
     }
 
@@ -81,9 +81,13 @@ class ToDoListPresenter @Inject constructor(private val toDoListViewRepository: 
         }
     }
 
-    private fun Note.toUI(index: Int) = Item.NoteItem(text = text, checked = done, checkedListener = {
-        updateNote(index, Note(id, text, !done, notification))
-    }, noteClickListener = {
-        viewState.editNote(id, text, notification)
-    })
+    private fun Note.toUI(index: Int) = Item.NoteItem(
+        text = text,
+        checked = done,
+        checkedListener = {
+            updateNote(index, Note(id, text, !done, notification))
+        },
+        noteClickListener = {
+            viewState.editNote(id, text, notification)
+        })
 }

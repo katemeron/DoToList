@@ -72,14 +72,18 @@ class NoteDetailsFragment : MvpAppCompatFragment(), NoteDetailsView {
                 val invert = !presenter.currentNotification
                 presenter.currentNotification = invert
                 requireActivity().invalidateOptionsMenu()
-                cancelAlarm()
+                if (presenter.currentId.isNotEmpty()) {
+                    cancelAlarm()
+                }
                 true
             }
             R.id.action_notification_off -> {
                 val invert = !presenter.currentNotification
                 presenter.currentNotification = invert
                 requireActivity().invalidateOptionsMenu()
-                setAlarm(binding.noteEditView.editableText.toString())
+                if (presenter.currentId.isNotEmpty()) {
+                    setAlarm(binding.noteEditView.editableText.toString())
+                }
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -137,8 +141,9 @@ class NoteDetailsFragment : MvpAppCompatFragment(), NoteDetailsView {
         val intent = Intent(requireActivity(), MyBroadcastReceiver::class.java)
         intent.putExtra(MyBroadcastReceiver.ID_KEY, presenter.currentId)
         intent.putExtra(MyBroadcastReceiver.MESSAGE_KEY, text)
+
         alarmPendingIntent = PendingIntent.getBroadcast(
-            requireActivity().applicationContext, 234, intent, 0
+            requireActivity().applicationContext, 234, intent, PendingIntent.FLAG_CANCEL_CURRENT
         )
         ContextCompat.getSystemService(requireActivity(), AlarmManager::class.java)?.set(
             AlarmManager.RTC_WAKEUP,
@@ -149,7 +154,6 @@ class NoteDetailsFragment : MvpAppCompatFragment(), NoteDetailsView {
 
     private fun cancelAlarm() {
         alarmPendingIntent?.let {
-            it.cancel()
             ContextCompat.getSystemService(requireActivity(), AlarmManager::class.java)?.cancel(it)
         }
     }

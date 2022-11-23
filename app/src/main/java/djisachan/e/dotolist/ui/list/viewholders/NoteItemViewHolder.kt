@@ -21,6 +21,7 @@ class NoteItemViewHolder(itemView: View) : ToDoItemViewHolder(itemView) {
         checkBox.isChecked = item.checked
         if (item.checked) {
             titleTextView.paintFlags = titleTextView.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+            titleTextView.setOnClickListener(null)
         } else {
             titleTextView.paintFlags = 0
             titleTextView.setOnClickListener(item.noteClickListener)
