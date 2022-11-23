@@ -2,8 +2,8 @@ package djisachan.e.dotolist
 
 import android.app.Application
 import djisachan.e.dotolist.di.DaggerToDoNotesComponent
-import djisachan.e.dotolist.di.ToDoNotesModule
 import djisachan.e.dotolist.di.ToDoNotesComponent
+import djisachan.e.dotolist.di.ToDoNotesModule
 
 
 /**

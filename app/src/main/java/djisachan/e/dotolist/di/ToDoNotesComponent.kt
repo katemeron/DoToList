@@ -6,6 +6,7 @@ import djisachan.e.dotolist.data.NotesDatabase
 import djisachan.e.dotolist.domain.NoteDetailsRepository
 import djisachan.e.dotolist.domain.ToDoListViewRepository
 import djisachan.e.dotolist.ui.details.NoteDetailsFragment
+import djisachan.e.dotolist.ui.dialog.ReminderDialog
 import djisachan.e.dotolist.ui.list.ToDoListFragment
 import djisachan.e.dotolist.ui.list.ToDoListPresenter
 import javax.inject.Singleton
@@ -30,4 +31,6 @@ interface ToDoNotesComponent {
     fun inject(toDoListFragment: ToDoListFragment)
 
     fun inject(noteDetailsFragment: NoteDetailsFragment)
+
+    fun inject(reminderDialog: ReminderDialog)
 }
