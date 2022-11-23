@@ -135,6 +135,7 @@ class NoteDetailsFragment : MvpAppCompatFragment(), NoteDetailsView {
 
     override fun setAlarm(text: String) {
         val intent = Intent(requireActivity(), MyBroadcastReceiver::class.java)
+        intent.putExtra(MyBroadcastReceiver.ID_KEY, presenter.currentId)
         intent.putExtra(MyBroadcastReceiver.MESSAGE_KEY, text)
         alarmPendingIntent = PendingIntent.getBroadcast(
             requireActivity().applicationContext, 234, intent, 0

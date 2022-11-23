@@ -36,7 +36,6 @@ class ToDoListFragment : MvpAppCompatFragment(), ToDoListView {
         return ToDoListPresenter(appComponent.toDoListViewRepository)
     }
 
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = ToDoFragmentLayoutBinding.inflate(inflater, container, false)
         return binding.root
@@ -44,9 +43,12 @@ class ToDoListFragment : MvpAppCompatFragment(), ToDoListView {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         initView()
-        presenter.loadList()
     }
 
+    override fun onResume() {
+        super.onResume()
+        presenter.loadList()
+    }
 
     private fun initView() {
         with(requireActivity() as AppCompatActivity) {
